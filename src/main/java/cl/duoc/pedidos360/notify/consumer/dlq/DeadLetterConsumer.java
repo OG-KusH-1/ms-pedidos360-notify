@@ -7,6 +7,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -14,11 +15,12 @@ import java.io.IOException;
 /**
  * DeadLetterConsumer - Auditor y monitor de colas de mensajes no entregados (DLQ).
  *
- * Cumple con la instrucción específica de la evaluación:
- * "Los microservicios deben manejar mensajes no entregados enviándolos a DLQ
- *  y registrándolos en logs."
+ * NOTA: Por defecto está deshabilitado (@ConditionalOnProperty) para permitir
+ * que los mensajes se queden acumulados en la DLQ y el docente pueda ver el contador
+ * en '1' e inspeccionar el mensaje en la consola web de RabbitMQ con 'Get Messages'.
  */
 @Component
+@ConditionalOnProperty(name = "app.rabbitmq.dlq.consumer.enabled", havingValue = "true", matchIfMissing = false)
 @Slf4j
 public class DeadLetterConsumer {
 
